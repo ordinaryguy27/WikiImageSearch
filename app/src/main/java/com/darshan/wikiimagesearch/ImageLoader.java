@@ -1,27 +1,19 @@
 package com.darshan.wikiimagesearch;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.util.LruCache;
-import android.util.TypedValue;
 import android.widget.ImageView;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,16 +23,16 @@ import java.util.concurrent.Executors;
  */
 public class ImageLoader {
 
-    ExecutorService ex = Executors.newFixedThreadPool(10);
+    private ExecutorService ex = Executors.newFixedThreadPool(10);
 
-    ArrayList<BitmapGetter> bitmapGetters = new ArrayList<>();
-    LruCache<String,Bitmap> memoryCache;
+    private ArrayList<BitmapGetter> bitmapGetters = new ArrayList<>();
+    private LruCache<String,Bitmap> memoryCache;
     private Map<ImageView, String> imageViews = Collections
             .synchronizedMap(new WeakHashMap<ImageView, String>());
-    DiskLruImageCache mDiskLruImageCache;
+    private DiskLruImageCache mDiskLruImageCache;
     final String THUMBNAIL = "thumbnail";
 
-    ImageLoader(Context context){
+    public ImageLoader(Context context){
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         final int cacheSize = maxMemory / 8;
         memoryCache = new LruCache<String, Bitmap>(cacheSize) {
@@ -61,7 +53,7 @@ public class ImageLoader {
         return false;
     }
 
-    class BitmapGetter extends AsyncTask<String,String,Bitmap> {
+    private class BitmapGetter extends AsyncTask<String,String,Bitmap> {
         WeakReference<ImageView> weakImageView;
         String mUrl;
 
@@ -101,7 +93,7 @@ public class ImageLoader {
             return null;
         }
 
-        Bitmap decode(InputStream in){
+        private Bitmap decode(InputStream in){
             /* No need to scale bitmap as bitmap given by wikipedia is always les than or equal to 250dp
                 as set in wiki url params */
             return BitmapFactory.decodeStream(in);
@@ -122,7 +114,7 @@ public class ImageLoader {
     }
 
 
-    void loadimage(String url, ImageView img){
+    public void loadimage(String url, ImageView img){
         imageViews.put(img, url);
         Bitmap b = memoryCache.get(url);
         if(b!= null){
@@ -136,7 +128,7 @@ public class ImageLoader {
             bitmapGetters.add(bg);
         }
     }
-    void cancelAll(){
+    public void cancelAll(){
         for(int i = 0;i<bitmapGetters.size();i++) {
             bitmapGetters.get(i).cancel(false);
         }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -31,19 +30,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MainActivity extends Activity {
-    ArrayList<TitleImage> mTitleImages = new ArrayList<>();
-    ImageAdapter mImageAdapter;
-    ProgressDialog mProgressDialog;
-    RecyclerView mRecyclerView;
-    int REQUIRED_SIZE = (int)(250 * Resources.getSystem().getDisplayMetrics().density);
+    private ArrayList<TitleImage> mTitleImages = new ArrayList<>();
+    private ImageAdapter mImageAdapter;
+    private ProgressDialog mProgressDialog;
+    private RecyclerView mRecyclerView;
+    private final int REQUIRED_SIZE = (int)(250 * Resources.getSystem().getDisplayMetrics().density);
     private final String WIKIURL = "https://en.wikipedia.org/w/api.php?" +
             "action=query&prop=pageimages&format=json&piprop=thumbnail&pithumbsize=%d&" +
             "pilimit=50&generator=prefixsearch&gpslimit=50&gpssearch=%s";
-    ImageAsync mImageAsync;
-    Handler mHandler = new Handler();
-    TextView mNoShowTextView;
-    final int THIRTY_SEC_TIMEOUT = 30000;
-    EditText mSearchBox;
+    private ImageAsync mImageAsync;
+    private Handler mHandler = new Handler();
+    private TextView mNoShowTextView;
+    private final int THIRTY_SEC_TIMEOUT = 30000;
+    private EditText mSearchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +100,11 @@ public class MainActivity extends Activity {
             this.imageUrl = imageUrl;
         }
     }
-    void setNoshowLayout(boolean show){
+    private void setNoshowLayout(boolean show){
             mRecyclerView.setVisibility(show?View.GONE:View.VISIBLE);
             mNoShowTextView.setVisibility(show?View.VISIBLE:View.GONE);
     }
-    Runnable mTimeout = new Runnable() {
+    private Runnable mTimeout = new Runnable() {
         @Override
         public void run() {
             if(mImageAsync != null){
@@ -119,8 +118,8 @@ public class MainActivity extends Activity {
         }
     };
 
-    class ImageAsync extends AsyncTask<String,String,ArrayList<TitleImage>>{
-        boolean isError = false;
+    private class ImageAsync extends AsyncTask<String,String,ArrayList<TitleImage>>{
+        private boolean isError = false;
         @Override
         protected void onPreExecute() {
             mHandler.removeCallbacks(mTimeout);
@@ -159,7 +158,7 @@ public class MainActivity extends Activity {
 
         }
 
-        ArrayList<TitleImage> getfromjson(String jsonstring){
+        private ArrayList<TitleImage> getfromjson(String jsonstring){
             try {
                 JSONObject mainjson = new JSONObject(jsonstring);
                 JSONObject query = mainjson.getJSONObject("query");
