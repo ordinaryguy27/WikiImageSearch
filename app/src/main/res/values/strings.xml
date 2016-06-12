@@ -4,4 +4,5 @@
     <string name="search">Search</string>
     <string name="nothing_to_show">Nothing to show</string>
     <string name="connect_to_internet">Connect to internet</string>
+    <string name="timeout">Timeout occurred</string>
 </resources>
