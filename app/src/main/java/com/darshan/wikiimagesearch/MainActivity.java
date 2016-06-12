@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -41,11 +42,20 @@ public class MainActivity extends Activity {
     Handler mHandler = new Handler();
     TextView mNoShowTextView;
     final int THIRTY_SEC_TIMEOUT = 30000;
+    EditText mSearchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSearchBox = ((EditText)findViewById(R.id.editText2));
+        mSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                buttonpressed(mSearchBox);
+                return true;
+            }
+        });
         RecyclerView recycleView = (RecyclerView) findViewById(R.id.recycleview);
         recycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerView = recycleView;
@@ -66,9 +76,8 @@ public class MainActivity extends Activity {
     }
 
     public void buttonpressed(View v){
-        EditText searchbox = ((EditText)findViewById(R.id.editText2));
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(searchbox.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(mSearchBox.getWindowToken(), 0);
         if(!isNetworkAvailable()){
             Toast.makeText(this,R.string.connect_to_internet,Toast.LENGTH_LONG).show();
             setNoshowLayout(true);
@@ -78,7 +87,7 @@ public class MainActivity extends Activity {
             mImageAsync.cancel(false);
         }
         mImageAsync = new ImageAsync();
-        mImageAsync.execute(searchbox.getText().toString());
+        mImageAsync.execute(mSearchBox.getText().toString());
     }
     class TitleImage{
         String title;
