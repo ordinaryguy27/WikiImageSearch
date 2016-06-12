@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -52,8 +53,11 @@ public class MainActivity extends Activity {
         mSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                buttonpressed(mSearchBox);
-                return true;
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                        (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    buttonpressed(mSearchBox);
+                }
+                return false;
             }
         });
         RecyclerView recycleView = (RecyclerView) findViewById(R.id.recycleview);
